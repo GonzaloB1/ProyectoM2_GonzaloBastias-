@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-   "start": "node src/index.js",
-  "dev": "nodemon src/index.js",
-  "test": "jest --runInBand --forceExit"
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "jest --runInBand --forceExit"
   },
   "keywords": [],
   "author": "",
@@ -23,7 +23,7 @@
     "supertest": "^7.2.2"
   },
   "jest": {
-  "testEnvironment": "node",
-  "testTimeout": 10000
-}
+    "testEnvironment": "node",
+    "testTimeout": 10000
+  }
 }
