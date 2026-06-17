@@ -8,9 +8,9 @@ API REST para gestionar autores y posts, desarrollada con Node.js + Express 5 + 
 - Express 5
 - PostgreSQL v15+ (driver `pg`)
 - Jest + Supertest (testing)
-- OpenAPI (documentación)
+- OpenAPI (documentacion)
 
-## Instalación y ejecución local
+## Instalacion y ejecucion local
 
 1. Clonar el repositorio:
 ```bash
@@ -30,7 +30,7 @@ API REST para gestionar autores y posts, desarrollada con Node.js + Express 5 + 
 
 4. Crear las tablas:
 ```bash
-   psql -U postgres -d miniblog -f src/db/schema.sql
+   psql -U postgres -d miniblog -f src/db/setup.sql
 ```
 
 5. Cargar datos de prueba:
@@ -59,7 +59,7 @@ DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=miniblog
 DB_USER=postgres
-DB_PASSWORD=tu_contraseña
+DB_PASSWORD=tu_contrasena
 NODE_ENV=development
 ```
 
@@ -91,14 +91,14 @@ npm test
 - PUT    /posts/:id
 - DELETE /posts/:id
 
-## Documentación OpenAPI
+## Documentacion OpenAPI
 
-El archivo `openapi.yaml` está en la raíz del proyecto.
-Podés visualizarlo en https://editor.swagger.io pegando el contenido del archivo.
+El archivo `docs/openapi.yaml` contiene la especificacion completa.
+Se puede visualizar en https://editor.swagger.io pegando el contenido del archivo.
 
 ## Deploy en Railway
 
-### URL pública
+### URL publica
 https://proyectom2gonzalobastias-production.up.railway.app
 
 ### Pasos para reproducir el deploy
@@ -118,17 +118,25 @@ https://proyectom2gonzalobastias-production.up.railway.app
    | NODE_ENV      | `production`                 |
 
 5. Hacer click en **Deploy**
-6. Una vez deployado, correr las migraciones desde local usando la URL pública de Postgres:
+6. Una vez deployado, correr los scripts contra la base de produccion usando la URL publica de Postgres:
 ```bash
-   psql "postgresql://USER:PASSWORD@HOST:PORT/railway" -f src/db/schema.sql
+   psql "postgresql://USER:PASSWORD@HOST:PORT/railway" -f src/db/setup.sql
    psql "postgresql://USER:PASSWORD@HOST:PORT/railway" -f src/db/seed.sql
 ```
    *(Las credenciales se obtienen de la variable `DATABASE_PUBLIC_URL` en el servicio Postgres de Railway)*
 
-7. Railway redespliega automáticamente con cada push a `main`
+7. Railway redespliega automaticamente con cada push a `main`
 
 ## Uso de IA
 
-Se utilizó IA como asistente para: estructura del proyecto, consultas SQL,
-implementación de endpoints con Express 5, configuración de tests con Jest/Supertest,
-documentación OpenAPI y configuración del deploy en Railway.
+Se utilizo Claude (Anthropic) como asistente durante todo el desarrollo del proyecto. A continuacion el detalle de los prompts mas relevantes y su influencia:
+
+| Prompt utilizado | Influencia en el desarrollo |
+|---|---|
+| "Vamos a hacerlo paso a paso, tengo que guardarlo en GitHub con commits" | Definio el flujo de trabajo: 7 commits separados por etapa (SQL, arrays en memoria, conexion real a DB, middleware de errores, tests, docs OpenAPI, deploy) |
+| "Diagnostico de IDs desincronizados en Postgres luego de truncar tablas" | Identifico que las secuencias SERIAL no se reinician con TRUNCATE simple; se resolvio con `TRUNCATE ... RESTART IDENTITY CASCADE` |
+| "Revision de mensaje extrano de la libreria dotenv en consola" | Se confirmo que era un mensaje promocional inofensivo de dotenv v17 y no un riesgo de seguridad |
+| "Guia paso a paso para deploy en Railway" | Asistencia en la creacion del servicio Postgres, conexion del repo de GitHub, configuracion de variables de entorno usando referencias entre servicios (`${{Postgres.PGHOST}}`, etc.), generacion de dominio publico y carga del schema/seed contra la base de produccion |
+| "Generar suite de tests con Jest y Supertest" | Se crearon 19 tests cubriendo CRUD y casos de error (400/404) para authors y posts |
+
+Cada paso fue ejecutado, probado manualmente con Postman/Thunder Client o PowerShell, y validado antes de avanzar al siguiente commit.
