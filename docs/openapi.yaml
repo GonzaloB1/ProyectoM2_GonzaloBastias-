@@ -1,0 +1,270 @@
+openapi: 3.0.3
+info:
+  title: MiniBlog API
+  description: API REST para gestion de autores y posts
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000
+    description: Local
+  - url: https://TU_APP.up.railway.app
+    description: Production
+
+tags:
+  - name: Authors
+  - name: Posts
+
+paths:
+  /authors:
+    get:
+      tags: [Authors]
+      summary: Listar autores
+      responses:
+        '200':
+          description: Lista de autores
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Author' }
+    post:
+      tags: [Authors]
+      summary: Crear autor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AuthorInput' }
+      responses:
+        '201':
+          description: Autor creado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Author' }
+        '400':
+          description: Validacion fallida
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /authors/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: integer }
+    get:
+      tags: [Authors]
+      summary: Obtener autor por ID
+      responses:
+        '200':
+          description: Autor encontrado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Author' }
+        '404':
+          description: No encontrado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+    put:
+      tags: [Authors]
+      summary: Actualizar autor
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/AuthorInput' }
+      responses:
+        '200':
+          description: Autor actualizado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Author' }
+        '400':
+          description: Validacion fallida
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '404':
+          description: No encontrado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+    delete:
+      tags: [Authors]
+      summary: Eliminar autor
+      responses:
+        '204':
+          description: Eliminado correctamente
+        '404':
+          description: No encontrado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /posts:
+    get:
+      tags: [Posts]
+      summary: Listar posts
+      responses:
+        '200':
+          description: Lista de posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Post' }
+    post:
+      tags: [Posts]
+      summary: Crear post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PostInput' }
+      responses:
+        '201':
+          description: Post creado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Post' }
+        '400':
+          description: Validacion fallida
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '404':
+          description: Author no encontrado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /posts/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: integer }
+    get:
+      tags: [Posts]
+      summary: Obtener post por ID
+      responses:
+        '200':
+          description: Post encontrado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Post' }
+        '404':
+          description: No encontrado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+    put:
+      tags: [Posts]
+      summary: Actualizar post
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PostInput' }
+      responses:
+        '200':
+          description: Post actualizado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Post' }
+        '400':
+          description: Validacion fallida
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '404':
+          description: No encontrado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+    delete:
+      tags: [Posts]
+      summary: Eliminar post
+      responses:
+        '204':
+          description: Eliminado correctamente
+        '404':
+          description: No encontrado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /posts/author/{authorId}:
+    parameters:
+      - name: authorId
+        in: path
+        required: true
+        schema: { type: integer }
+    get:
+      tags: [Posts]
+      summary: Posts de un autor con detalle del autor
+      responses:
+        '200':
+          description: Lista de posts con info del autor
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/PostWithAuthor' }
+        '404':
+          description: Autor no encontrado
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+components:
+  schemas:
+    Author:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        email: { type: string, format: email }
+        bio: { type: string, nullable: true }
+        created_at: { type: string, format: date-time }
+
+    AuthorInput:
+      type: object
+      properties:
+        name: { type: string, example: 'Ana Garcia' }
+        email: { type: string, format: email, example: 'ana@example.com' }
+        bio: { type: string, example: 'Desarrolladora full-stack' }
+      required: [name, email]
+
+    Post:
+      type: object
+      properties:
+        id: { type: integer }
+        title: { type: string }
+        content: { type: string }
+        author_id: { type: integer }
+        published: { type: boolean }
+        created_at: { type: string, format: date-time }
+
+    PostWithAuthor:
+      allOf:
+        - { $ref: '#/components/schemas/Post' }
+        - type: object
+          properties:
+            author_name: { type: string }
+            author_email: { type: string }
+            author_bio: { type: string }
+
+    PostInput:
+      type: object
+      properties:
+        title: { type: string, example: 'Mi primer post' }
+        content: { type: string, example: 'Contenido del post...' }
+        author_id: { type: integer, example: 1 }
+        published: { type: boolean, example: false }
+      required: [title, content, author_id]
+
+    Error:
+      type: object
+      properties:
+        error: { type: string }
