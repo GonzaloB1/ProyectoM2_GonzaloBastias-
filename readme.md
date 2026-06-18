@@ -8,7 +8,7 @@ API REST para gestionar autores y posts, desarrollada con Node.js + Express 5 + 
 - Express 5
 - PostgreSQL v15+ (driver `pg`)
 - Jest + Supertest (testing)
-- OpenAPI (documentacion)
+- OpenAPI + Swagger UI (documentacion)
 
 ## Instalacion y ejecucion local
 
@@ -94,7 +94,12 @@ npm test
 ## Documentacion OpenAPI
 
 El archivo `docs/openapi.yaml` contiene la especificacion completa.
-Se puede visualizar en https://editor.swagger.io pegando el contenido del archivo.
+
+Se puede visualizar de dos formas:
+
+- **Swagger UI en vivo (recomendado):** `https://proyectom2gonzalobastias-production.up.railway.app/api-docs`
+- **Local:** correr el servidor (`npm start`) y entrar a `http://localhost:3000/api-docs`
+- **Alternativa sin levantar el servidor:** [ver en Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/GonzaloB1/ProyectoM2_GonzaloBastias-/main/docs/openapi.yaml) (carga el archivo automaticamente desde el repo)
 
 ## Deploy en Railway
 
@@ -133,10 +138,11 @@ Se utilizo Claude (Anthropic) como asistente durante todo el desarrollo del proy
 
 | Prompt utilizado | Influencia en el desarrollo |
 |---|---|
-| "Vamos a hacerlo paso a paso, tengo que guardarlo en GitHub con commits" | Definio el flujo de trabajo: 7 commits separados por etapa (SQL, arrays en memoria, conexion real a DB, middleware de errores, tests, docs OpenAPI, deploy) |
+| "Vamos a hacerlo paso a paso, tengo que guardarlo en GitHub con commits" | Definio el flujo de trabajo: commits separados por etapa (SQL, arrays en memoria, conexion real a DB, middleware de errores, tests, docs OpenAPI, deploy) |
 | "Diagnostico de IDs desincronizados en Postgres luego de truncar tablas" | Identifico que las secuencias SERIAL no se reinician con TRUNCATE simple; se resolvio con `TRUNCATE ... RESTART IDENTITY CASCADE` |
 | "Revision de mensaje extrano de la libreria dotenv en consola" | Se confirmo que era un mensaje promocional inofensivo de dotenv v17 y no un riesgo de seguridad |
 | "Guia paso a paso para deploy en Railway" | Asistencia en la creacion del servicio Postgres, conexion del repo de GitHub, configuracion de variables de entorno usando referencias entre servicios (`${{Postgres.PGHOST}}`, etc.), generacion de dominio publico y carga del schema/seed contra la base de produccion |
 | "Generar suite de tests con Jest y Supertest" | Se crearon 19 tests cubriendo CRUD y casos de error (400/404) para authors y posts |
+| "Como podemos hacer el de Swagger" | Integracion de Swagger UI en `/api-docs` usando `swagger-ui-express` y `yamljs`, sirviendo la documentacion en vivo desde la propia API en lugar de solo un archivo estatico |
 
 Cada paso fue ejecutado, probado manualmente con Postman/Thunder Client o PowerShell, y validado antes de avanzar al siguiente commit.
