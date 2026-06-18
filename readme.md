@@ -97,7 +97,7 @@ El archivo `docs/openapi.yaml` contiene la especificacion completa.
 
 Se puede visualizar de dos formas:
 
-- **Swagger UI en vivo (recomendado):** `https://proyectom2gonzalobastias-production.up.railway.app/api-docs`
+- **Swagger UI en vivo (recomendado):** https://proyectom2gonzalobastias-production.up.railway.app/api-docs
 - **Local:** correr el servidor (`npm start`) y entrar a `http://localhost:3000/api-docs`
 - **Alternativa sin levantar el servidor:** [ver en Swagger Editor](https://editor.swagger.io/?url=https://raw.githubusercontent.com/GonzaloB1/ProyectoM2_GonzaloBastias-/main/docs/openapi.yaml) (carga el archivo automaticamente desde el repo)
 
