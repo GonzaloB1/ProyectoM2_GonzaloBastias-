@@ -7,6 +7,18 @@ const app = express();
 
 app.use(express.json());
 
+app.get('/', (req, res) => {
+  res.json({
+    message: 'MiniBlog API',
+    health: '/health',
+    endpoints: {
+      authors: '/authors',
+      posts: '/posts',
+      postsByAuthor: '/posts/author/:authorId'
+    }
+  });
+});
+
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
 app.use('/authors', authorsRouter);
