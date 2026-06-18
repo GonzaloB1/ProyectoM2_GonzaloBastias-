@@ -7,7 +7,7 @@ info:
 servers:
   - url: http://localhost:3000
     description: Local
-  - url: https://TU_APP.up.railway.app
+  - url: https://proyectom2gonzalobastias-production.up.railway.app
     description: Production
 
 tags:

@@ -28,23 +28,18 @@ API REST para gestionar autores y posts, desarrollada con Node.js + Express 5 + 
    psql -U postgres -c "CREATE DATABASE miniblog"
 ```
 
-4. Crear las tablas:
+4. Crear las tablas y cargar los datos de prueba (el script incluye schema + seed):
 ```bash
    psql -U postgres -d miniblog -f src/db/setup.sql
 ```
 
-5. Cargar datos de prueba:
-```bash
-   psql -U postgres -d miniblog -f src/db/seed.sql
-```
-
-6. Configurar variables de entorno:
+5. Configurar variables de entorno:
 ```bash
    cp .env.example .env
    # Editar .env con tus credenciales
 ```
 
-7. Iniciar el servidor:
+6. Iniciar el servidor:
 ```bash
    npm start
 ```
@@ -59,7 +54,7 @@ DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=miniblog
 DB_USER=postgres
-DB_PASSWORD=tu_contrasena
+DB_PASSWORD=tu_password
 NODE_ENV=development
 ```
 
@@ -123,10 +118,9 @@ https://proyectom2gonzalobastias-production.up.railway.app
    | NODE_ENV      | `production`                 |
 
 5. Hacer click en **Deploy**
-6. Una vez deployado, correr los scripts contra la base de produccion usando la URL publica de Postgres:
+6. Una vez deployado, correr el script contra la base de produccion usando la URL publica de Postgres (incluye schema + seed):
 ```bash
    psql "postgresql://USER:PASSWORD@HOST:PORT/railway" -f src/db/setup.sql
-   psql "postgresql://USER:PASSWORD@HOST:PORT/railway" -f src/db/seed.sql
 ```
    *(Las credenciales se obtienen de la variable `DATABASE_PUBLIC_URL` en el servicio Postgres de Railway)*
 
@@ -144,5 +138,6 @@ Se utilizo Claude (Anthropic) como asistente durante todo el desarrollo del proy
 | "Guia paso a paso para deploy en Railway" | Asistencia en la creacion del servicio Postgres, conexion del repo de GitHub, configuracion de variables de entorno usando referencias entre servicios (`${{Postgres.PGHOST}}`, etc.), generacion de dominio publico y carga del schema/seed contra la base de produccion |
 | "Generar suite de tests con Jest y Supertest" | Se crearon 19 tests cubriendo CRUD y casos de error (400/404) para authors y posts |
 | "Como podemos hacer el de Swagger" | Integracion de Swagger UI en `/api-docs` usando `swagger-ui-express` y `yamljs`, sirviendo la documentacion en vivo desde la propia API en lugar de solo un archivo estatico |
+| "Mejorar lo que esta en insuficiencia segun auditoria recibida" | Se detecto que `setup.sql` habia quedado sin `CREATE TABLE` tras una limpieza anterior de archivos duplicados; se unifico schema + seed en un unico `setup.sql` reejecutable, se corrigio el placeholder de URL en `docs/openapi.yaml` y se agrego `NODE_ENV` a `.env.example` |
 
 Cada paso fue ejecutado, probado manualmente con Postman/Thunder Client o PowerShell, y validado antes de avanzar al siguiente commit.
